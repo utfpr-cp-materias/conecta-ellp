@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ConectaELLP</title>
+
+  <link rel="shortcut icon" type="image" href="/images/logo.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet">
+  <link rel='stylesheet' href='/stylesheets/reset.css' />
+  <link rel='stylesheet' href='/stylesheets/global.css' />
+</head>
+
+<body>
+  <header class="header">
+    <div class="header__container-left">
+      <img src="../images/logo.svg" alt="Logo">
+
+      <div class="header__container-left-text">
+        <p>ConectaELLP</p>
+        <span><%= type %></span>
+      </div>
+
+    </div>
+    
+    <div class="header__container-right">
+      <span><%= name %></span>
+      <form action="/auth/logout" method="POST" style="display: inline;">
+        <button type="submit" class="button-tertiary">Sair</button>
+      </form>
+      <!-- <a class="button-tertiary" href="/auth/logout">Sair</a> -->
+    </div>
+  </header>
+
+  <nav class="nav__container">
+    <ul class="nav__list">
+      <li class="nav__item <%= (currentPath === '/') ? 'active' : '' %>"><a href="/">Oficinas</a></li>
+      <% if (user.type === 'teacher' || user.type === 'admin') { %>
+        <li class="nav__item <%= (currentPath === '/users') ? 'active' : '' %>"><a href="/users">Usuários</a></li>
+        <li class="nav__item <%= (currentPath === '/certificados') ? 'active' : '' %>"><a href="/certificados">Certificados</a></li>
+      <% } %>
+    </ul>
+  </nav>
