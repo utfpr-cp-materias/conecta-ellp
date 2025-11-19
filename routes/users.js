@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const { User } = require('../models/user');
 const { Workshop } = require('../models/workshop');
-const { isAuthenticated, isAdmin } = require('../middleware/auth');
+const { isAuthenticated, isAdmin, isTeacherOrAdmin } = require('../middleware/auth');
 
 router.post('/', isAuthenticated, async (req, res) => {
   const { name, email, password, age, type, volunteerData } = req.body;
@@ -69,7 +69,7 @@ router.patch('/me', isAuthenticated, async (req, res) => {
   }
 });
 
-router.patch('/:id', [isAuthenticated, isAdmin], async (req, res) => {
+router.patch('/:id', [isAuthenticated, isTeacherOrAdmin], async (req, res) => {
   const { name, email, age, type, volunteerData } = req.body;
 
   try {
@@ -106,7 +106,7 @@ router.patch('/:id', [isAuthenticated, isAdmin], async (req, res) => {
   }
 });
 
-router.get('/', [isAuthenticated, isAdmin], async (req, res) => {
+router.get('/', [isAuthenticated, isTeacherOrAdmin], async (req, res) => {
   try {
     const users = await User.find({});
     res.json(users);
@@ -115,7 +115,7 @@ router.get('/', [isAuthenticated, isAdmin], async (req, res) => {
   }
 });
 
-router.post('/activate/:id', [isAuthenticated, isAdmin], async (req, res) => {
+router.post('/activate/:id', [isAuthenticated, isTeacherOrAdmin], async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, { status: 'active' }, { new: true });
     if (!user) {
@@ -127,7 +127,7 @@ router.post('/activate/:id', [isAuthenticated, isAdmin], async (req, res) => {
   }
 });
 
-router.post('/deactivate/:id', [isAuthenticated, isAdmin], async (req, res) => {
+router.post('/deactivate/:id', [isAuthenticated, isTeacherOrAdmin], async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, { status: 'inactive' }, { new: true });
     if (!user) {
@@ -139,7 +139,7 @@ router.post('/deactivate/:id', [isAuthenticated, isAdmin], async (req, res) => {
   }
 });
 
-router.delete('/:id', [isAuthenticated, isAdmin], async (req, res) => {
+router.delete('/:id', [isAuthenticated, isTeacherOrAdmin], async (req, res) => {
   try {
     const userIdToDelete = req.params.id;
 

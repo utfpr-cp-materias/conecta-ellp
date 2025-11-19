@@ -6,9 +6,9 @@ const Docxtemplater = require('docxtemplater');
 const jszip = require('jszip');
 const PizZip = require('pizzip');
 const { User } = require('../models/user');
-const { isAuthenticated, isAdmin } = require('../middleware/auth');
+const { isAuthenticated, isAdmin, isTeacherOrAdmin } = require('../middleware/auth');
 
-router.post('/volunteer-agreements', [isAuthenticated, isAdmin], async (req, res) => {
+router.post('/volunteer-agreements', [isAuthenticated, isTeacherOrAdmin], async (req, res) => {
   const { userIds } = req.body;
 
   if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
