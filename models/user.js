@@ -48,6 +48,19 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  volunteerData: {
+    birthDate: { type: Date, required: false },
+    cpf: { type: String, required: false },
+    nationality: { type: String, required: false },
+    isStudentUTFPR: { type: Boolean, required: false },
+    course: { type: String, required: false },
+    semester: { type: String, required: false },
+    ra: { type: String, required: false },
+    address: { type: String, required: false },
+    city: { type: String, required: false },
+    state: { type: String, required: false },
+    phone: { type: String, required: false },
+  }
 });
 
 userSchema.methods.toJSON = function () {

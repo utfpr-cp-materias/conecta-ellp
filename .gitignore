@@ -1,0 +1,4 @@
+node_modules
+.env
+generate-hash.js
+npm-debug.log
