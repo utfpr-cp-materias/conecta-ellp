@@ -34,6 +34,41 @@ router.post('/', isAuthenticated, async (req, res) => {
   }
 });
 
+router.get('/me', isAuthenticated, (req, res) => {
+  res.json(req.user);
+});
+
+router.patch('/me', isAuthenticated, async (req, res) => {
+  const { name, email, age, volunteerData } = req.body;
+
+  try {
+    const userToUpdate = await User.findById(req.user._id);
+    if (!userToUpdate) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+
+    userToUpdate.name = name || userToUpdate.name;
+    userToUpdate.email = email || userToUpdate.email;
+    userToUpdate.age = age || userToUpdate.age;
+
+    if (volunteerData) {
+      if (!userToUpdate.volunteerData) {
+        userToUpdate.volunteerData = {};
+      }
+      Object.assign(userToUpdate.volunteerData, volunteerData);
+      userToUpdate.markModified('volunteerData');
+    }
+
+    const savedUser = await userToUpdate.save();
+    res.json(savedUser);
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: 'Este e-mail já está em uso.' });
+    }
+    res.status(500).json({ message: 'Erro ao atualizar perfil.' });
+  }
+});
+
 router.patch('/:id', [isAuthenticated, isAdmin], async (req, res) => {
   const { name, email, age, type, volunteerData } = req.body;
 
@@ -68,41 +103,6 @@ router.patch('/:id', [isAuthenticated, isAdmin], async (req, res) => {
     }
     console.error("ERRO AO ATUALIZAR USUÁRIO:", err);
     res.status(500).json({ message: 'Erro ao atualizar usuário.' });
-  }
-});
-
-router.get('/me', isAuthenticated, (req, res) => {
-  res.json(req.user);
-});
-
-router.patch('/me', isAuthenticated, async (req, res) => {
-  const { name, email, age, volunteerData } = req.body;
-
-  try {
-    const userToUpdate = await User.findById(req.user._id);
-    if (!userToUpdate) {
-      return res.status(404).json({ message: 'Usuário não encontrado.' });
-    }
-
-    userToUpdate.name = name || userToUpdate.name;
-    userToUpdate.email = email || userToUpdate.email;
-    userToUpdate.age = age || userToUpdate.age;
-
-    if (volunteerData) {
-      if (!userToUpdate.volunteerData) {
-        userToUpdate.volunteerData = {};
-      }
-      Object.assign(userToUpdate.volunteerData, volunteerData);
-      userToUpdate.markModified('volunteerData');
-    }
-
-    const savedUser = await userToUpdate.save();
-    res.json(savedUser);
-  } catch (err) {
-    if (err.code === 11000) {
-      return res.status(400).json({ message: 'Este e-mail já está em uso.' });
-    }
-    res.status(500).json({ message: 'Erro ao atualizar perfil.' });
   }
 });
 
